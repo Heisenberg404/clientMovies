@@ -1,0 +1,171 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+	<p:layout style="min-width:400px;min-height:200px;">
+
+
+		<p:layoutUnit position="center">
+			<div class="ui-g">
+				<div class="ui-g-6">Video App</div>
+				<div class="ui-g-6">
+					<div class="ui-g-12"></div>
+					<p:row></p:row>
+
+					<p:commandButton value="Go Directors" id="btnGoSearchDir"
+						styleClass="ui-priority-primary"
+						actionListener="#{managerView.goToSearchDirectors()}" />
+					<p:commandButton value="Go Movies" id="btnGoSearchMov"
+						styleClass="ui-priority-primary"
+						actionListener="#{managerView.goToSearchMovies()}" />
+					<p:commandButton value="Add Movie" id="btnAddMovie"
+						styleClass="ui-priority-primary"
+						oncomplete="PF('addMovieDialog').show()" />
+					<p:commandButton value="Add Director" id="btnAddDirector"
+						styleClass="ui-priority-primary"
+						oncomplete="PF('addDirectorDialog').show()" />
+
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+	<p:tabView id="tabView">
+		<p:tab title="Movies" id="tabMovies">
+			<h:panelGrid id="panelMovies" columns="12" cellpadding="10"
+				width="100%">
+				<h:form id="formMovies">
+					<p:dataScroller id="dataMovies" value="#{managerView.movies}"
+						var="movie" chunkSize="10">
+						<f:facet name="header">
+				            List Of Movies
+				        </f:facet>
+
+						<h:panelGrid columns="2" style="width:100%"
+							columnClasses="logo,detail">
+
+							<p:graphicImage value="img/movie.png"
+								style="width:300px; height:200px" />
+
+							<p:outputPanel style="min-width:600px;min-height:200px;">
+
+
+								<h:panelGrid columns="2" cellpadding="5" width="25%">
+
+									<h:outputText value="Id:" />
+									<h:outputText value="#{movie.id}" style="font-weight: bold" />
+
+									<h:outputText value="Name:" />
+									<h:outputText value="#{movie.name}" style="font-weight: bold" />
+
+									<h:outputText value="Id director:" />
+									<h:outputText value="#{movie.idDirector}"
+										style="font-weight: bold" />
+
+									<p:commandButton value="Delete" id="btnDelete"
+										update=":tabView" styleClass="ui-priority-primary"
+										actionListener="#{managerView.removeMovie(movie)}">
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</p:outputPanel>
+
+						</h:panelGrid>
+					</p:dataScroller>
+				</h:form>
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Directors" id="tabDirectors">
+			<h:panelGrid id="panelDirector" columns="12" cellpadding="10"
+				width="100%">
+				<h:form id="formDirectors">
+					<p:dataScroller id="dataDirector" value="#{managerView.directors}"
+						var="director" chunkSize="10">
+						<f:facet name="header">
+				            List of Directors
+				        </f:facet>
+
+						<h:panelGrid columns="2" style="width:100%"
+							columnClasses="logo,detail">
+							<p:graphicImage value="img/User.png"
+								style="width:250px; height:200px" />
+
+							<p:outputPanel style="min-width:600px;min-height:200px;">
+								<h:panelGrid columns="2" cellpadding="5">
+									<h:outputText value="Id:" />
+									<h:outputText value="#{director.id}" style="font-weight: bold" />
+
+									<h:outputText value="Name:" />
+									<h:outputText value="#{director.name}"
+										style="font-weight: bold" />
+
+									<h:outputText value="Last Name:" />
+									<h:outputText value="#{director.lastName}"
+										style="font-weight: bold" />
+									<p:commandButton value="Delete" id="btnDelete"
+										update=":tabView"
+										actionListener="#{managerView.removeDirector(director)}"
+										styleClass="ui-priority-primary" />
+
+								</h:panelGrid>
+							</p:outputPanel>
+						</h:panelGrid>
+					</p:dataScroller>
+				</h:form>
+			</h:panelGrid>
+		</p:tab>
+	</p:tabView>
+	<p:dialog header="Add director" position="top"
+		widgetVar="addDirectorDialog" closeOnEscape="true" showEffect="fade"
+		hideEffect="fade" resizable="false">
+		<h:form id="formDetailDirector">
+			<p:outputPanel id="movieDetail" style="text-align:center;">
+				<p:panelGrid columns="2" columnClasses="label,value">
+
+					<p:outputLabel value="Name: "></p:outputLabel>
+					<p:inputText value="#{directorService.name}"></p:inputText>
+					<p:outputLabel value="Last name:"></p:outputLabel>
+					<p:inputText value="#{directorService.lastName}"></p:inputText>
+
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Add"
+					actionListener="#{managerView.addDirector(directorService)}"
+					oncomplete="PF('addDirectorDialog').hide()"
+					process="@all formDetailDirector" update="@all">
+				</p:commandButton>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+	<p:dialog header="Add movie" position="top" widgetVar="addMovieDialog"
+		closeOnEscape="true" showEffect="fade" hideEffect="fade"
+		resizable="false">
+		<h:form id="formDetailMovie">
+			<p:outputPanel id="movieDetail" style="text-align:center;">
+				<p:panelGrid columns="2" columnClasses="label,value">
+
+					<p:outputLabel value="Name: "></p:outputLabel>
+					<p:inputText value="#{movieService.name}"></p:inputText>
+					<p:outputLabel value="Id director:"></p:outputLabel>
+					<p:inputText value="#{movieService.idDirector}"></p:inputText>
+
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Add"
+					actionListener="#{managerView.addMovie(movieService)}"
+					oncomplete="PF('movieDialog').hide()"
+					process="@all formDetailMovie" update="@all">
+				</p:commandButton>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+
+
+</h:body>
+</html>

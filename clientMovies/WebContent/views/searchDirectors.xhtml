@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+	<p:layout style="min-width:400px;min-height:200px;">
+
+
+		<p:layoutUnit position="center">
+			<div class="ui-g">
+				<div class="ui-g-6">Search Directors</div>
+				<div class="ui-g-6">
+					<div class="ui-g-6"></div>
+					<p:row></p:row>
+					
+					<p:commandButton value="Back Home" id="btnGoHome"
+						styleClass="ui-priority-primary"
+						actionListener="#{managerView.backHome()}" />
+
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+	<h:form id="form">
+	<p:dataTable id="singleDT" var="director" value="#{managerView.directors}" selectionMode="single" selection="#{managerView.directorSelected}" rowKey="#{director.id}">
+        <f:facet name="header">
+            Directors List
+        </f:facet>
+        <p:column headerText="Id">
+            <h:outputText value="#{director.id}" />
+        </p:column>
+        <p:column headerText="Year">
+            <h:outputText value="#{director.name}" />
+        </p:column>
+        <p:column headerText="Brand">
+            <h:outputText value="#{director.lastName}" />
+        </p:column>
+        <f:facet name="footer">
+            <p:commandButton process="singleDT" update=":form:directorDetail" icon="ui-icon-search" value="Edit" oncomplete="PF('directorDialog').show()" />
+        </f:facet>
+    </p:dataTable>
+		
+	<p:dialog header="Edit Director" widgetVar="directorDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel id="directorDetail" style="text-align:center;">
+            <p:panelGrid  columns="2" rendered="#{not empty managerView.directorSelected}" columnClasses="label,value">
+                <h:form id="formEdit">
+	                <h:outputText value="Id:" />
+	                <h:outputText value="#{managerView.directorSelected.id}" />
+	 				<br/><br/>
+	                <h:outputText value="Name:" />
+	                <h:inputText value="#{managerView.directorSelected.name}" />
+	 				<br/><br/>
+	                <h:outputText value="Last Name:" />
+	                <h:inputText value="#{managerView.directorSelected.lastName}"/>
+	                <br/><br/>
+	                <p:commandButton value="accept" process="formEdit"
+	                actionListener="#{managerView.updateDirector(managerView.directorSelected)}"
+	                update="form">
+	                </p:commandButton>
+	                <p:commandButton value="cancel" oncomplete="PF('directorDialog').hide()" ></p:commandButton>
+ 				</h:form>
+            </p:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
+	</h:form>
+</h:body>
+</html>

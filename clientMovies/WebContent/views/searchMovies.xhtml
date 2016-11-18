@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+	<p:layout style="min-width:400px;min-height:200px;">
+
+
+		<p:layoutUnit position="center">
+			<div class="ui-g">
+				<div class="ui-g-6">Search Movies</div>
+				<div class="ui-g-6">
+					<div class="ui-g-6"></div>
+					<p:row></p:row>
+					
+					<p:commandButton value="Back Home" id="btnGoHome"
+						styleClass="ui-priority-primary"
+						actionListener="#{managerView.backHome()}" />
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+	<h:form id="form">
+	<p:dataTable id="singleDT" var="movie" value="#{managerView.movies}" selectionMode="single" selection="#{managerView.movieSelected}" rowKey="#{movie.id}">
+        <f:facet name="header">
+            Movies List
+        </f:facet>
+        <p:column headerText="Id: ">
+            <h:outputText value="#{movie.id}" />
+        </p:column>
+        <p:column headerText="Name: ">
+            <h:outputText value="#{movie.name}" />
+        </p:column>
+        <p:column headerText="Id director: ">
+            <h:outputText value="#{movie.idDirector}" />
+        </p:column>
+        <f:facet name="footer">
+            <p:commandButton process="singleDT" update=":form:movieDetail" icon="ui-icon-search" value="Edit" oncomplete="PF('movieDialog').show()" />
+        </f:facet>
+    </p:dataTable>
+		
+	<p:dialog header="Edit Movie" widgetVar="movieDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel id="movieDetail" style="text-align:center;">
+            <p:panelGrid  columns="2" rendered="#{not empty managerView.movieSelected}" columnClasses="label,value">
+                <h:form id="formEdit">
+	                <h:outputText value="Id:" />
+	                <h:outputText value="#{managerView.movieSelected.id}" />
+	 				<br/><br/>
+	                <h:outputText value="Name:" />
+	                <h:inputText value="#{managerView.movieSelected.name}" />
+	 				<br/><br/>
+	                <h:outputText value="Id director:" />
+	                <h:inputText value="#{managerView.movieSelected.idDirector}"/>
+	                <br/><br/>
+	                <p:commandButton value="accept" process="formEdit"
+	                actionListener="#{managerView.updateMovie(managerView.movieSelected)}"
+	                update="form">
+	                </p:commandButton>
+	                <p:commandButton value="cancel" oncomplete="PF('movieDialog').hide()" ></p:commandButton>
+ 				</h:form>
+            </p:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
+	</h:form>
+	
+		
+	
+</h:body>
+</html>
